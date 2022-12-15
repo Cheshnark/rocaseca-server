@@ -349,7 +349,34 @@ const cragSchema = new Schema({
             }
         },
         RealFeelTemperature: {
-            type: Object
+            Metric: {
+                Value: {type: Number},
+                Unit: {type: String}
+            }
+        },
+        RelativeHumidity: {
+            type: Number
+        },
+        WindSpeed: {
+            Metric: {
+                Value: {type: Number},
+                Unit: {type: String}
+            }
+        },
+        UVIndex: {
+            type: Number
+        },
+        UVIndexText: {
+            type: String
+        },
+        CloudCover: {
+            type: Number
+        },
+        PrecipitationSummary: {
+            Metric: {
+                Value: {type: Number},
+                Unit: {type: String}
+            }
         }
     },
     // Five days weather
@@ -364,6 +391,29 @@ const cragSchema = new Schema({
     //Twelve hours weather
     twelveHoursWeather: {
         type:[twelveHoursSchema]
+    },
+    VerticalId: {
+        type: Number
+    },
+    cragInfo: {
+        Description: {
+            type: String
+        },
+        Sleep: {
+            type: String
+        },
+        Water: {
+            type: String
+        },
+        HowToGo: {
+            type: String
+        },
+        Author: {
+            type: String
+        },
+        Website: {
+            type: String
+        }
     }
     
 

@@ -1,6 +1,7 @@
 const Crag = require('../models/cragModel');
 const mongoose = require('mongoose');
 const axios = require('axios');
+const puppeteer = require('puppeteer');
 
 // Get all crags
 const getCrags = async (req, res) => {
@@ -12,7 +13,6 @@ const getCrags = async (req, res) => {
 // Get a single crag
 const getCrag = async (req, res) => {
     const {id} = req.params;
-    console.log(req.params);
 
     if(!mongoose.Types.ObjectId.isValid(id)){
         return res.status(404).json({error: 'Crag does not exist'})
@@ -95,7 +95,7 @@ const getCurrentWeather = async (req, res) => {
  
     const options = {
         method: 'GET',
-        url: `http://dataservice.accuweather.com/currentconditions/v1/${localityCode}?apikey=${process.env.REACT_APP_ACCUWEATHER_API_KEY}&language=es`,
+        url: `http://dataservice.accuweather.com/currentconditions/v1/${localityCode}?apikey=${process.env.REACT_APP_ACCUWEATHER_API_KEY}&language=es&details=true`,
         'accept-encoding': '*'
       };
 
@@ -108,8 +108,14 @@ const getCurrentWeather = async (req, res) => {
             WeatherIcon: response.data[0].WeatherIcon,
             HasPrecipitation: response.data[0].HasPrecipitation,
             PrecipitationType: response.data[0].IsDayTime,
-            Temperature: response.data[0].Temperature},
-            RealFeelTemperature: response.data[0].RealFeelTemperature
+            Temperature: response.data[0].Temperature,
+            RealFeelTemperature: response.data[0].RealFeelTemperature,
+            RelativeHumidity: response.data[0].RelativeHumidity,
+            WindSpeed: response.data[0].Wind.Speed,
+            UVIndex: response.data[0].UVIndex,
+            UVIndexText: response.data[0].UVIndexText,
+            CloudCover: response.data[0].CloudCover,
+            PrecipitationSummary: response.data[0].PrecipitationSummary.Precipitation}
         }})
 
         res.json(updatedCrag);
@@ -259,7 +265,7 @@ const getTwelveHours = async (req, res) => {
     axios.request(options)
     .then( async (response) => {       
         const updatedCrag = await Crag.updateMany({localityCode: localityCode}, {$set:{
-            twelveHoursUpdate: (new Date()).getTime(),
+            hourlyUpdate: (new Date()).getTime(),
             twelveHoursWeather: [
                 {
                     WeatherIcon: response.data[0].WeatherIcon,
@@ -425,6 +431,55 @@ const getTwelveHours = async (req, res) => {
     .catch((error) => {
         console.log(error);
     })
+};
+
+//GET scraped info and PATCH database entry with crag info
+const getVerticalInfo = async (req, res) => {
+    const {id} = req.params;
+
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(404).json({error: 'Crag does not exist'})
+    };
+
+    const crag = await Crag.findById(id);
+
+    if(!crag) {
+        return res.status(404).json({error:'Crag does not exist'})
+    };
+
+    const vertical = crag.VerticalId;
+
+    // Web scraping
+    const browser = await puppeteer.launch({headless:false});
+    const page = await browser.newPage();
+    await page.goto(`https://www.enlavertical.com/escuelas/view/${vertical}`)
+
+    const data = await page.evaluate(() => {
+        const events = document.querySelectorAll('dd').length;
+
+        const VerticalInfo = {
+            Description: document.querySelectorAll('dd')[0].innerText,
+            Sleep: document.querySelectorAll('dd')[events - 5].innerText,
+            Water: document.querySelectorAll('dd')[events - 4].innerText,
+            HowToGo: document.querySelectorAll('dd')[events - 3].innerText,
+            By: document.querySelectorAll('dd')[events - 1].innerText,
+        } 
+        return VerticalInfo;
+    })
+
+    // Store scrapped info to DB
+    const updatedCrag = await Crag.updateMany({VerticalId: vertical}, {$set:{
+           cragInfo: {
+               Description: data.Description,
+               Sleep: data.Sleep,
+               Water: data.Water,
+               HowToGo: data.HowToGo,
+               Author: data.By,
+               Website: `https://www.enlavertical.com/escuelas/view/${vertical}`
+           }
+    }})
+
+        res.json(updatedCrag);
 }
 
 module.exports = {
@@ -435,5 +490,6 @@ module.exports = {
     updateCrag,
     getCurrentWeather,
     getFiveDays,
-    getTwelveHours
+    getTwelveHours,
+    getVerticalInfo
 }

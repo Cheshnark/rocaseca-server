@@ -2,8 +2,12 @@ const express = require('express');
 const bodyParser = require("body-parser");
 const mongoose = require('mongoose');
 require('dotenv').config();
-const mainRoutes = require('./routes/main');
 const cors = require('cors');
+
+// Import routes
+const mainRoutes = require('./routes/main');
+const userRoutes = require('./routes/user');
+const loggedRoutes = require('./routes/logged');
 
 
 // Express app
@@ -42,4 +46,6 @@ mongoose.connect(process.env.MONGO_URI)
 
 // Routes
 app.use('/main', mainRoutes);
+app.use('/user', userRoutes);
+app.use('/logged', loggedRoutes);
 
