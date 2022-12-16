@@ -1,5 +1,6 @@
 const express = require('express');
 const {
+    getFavCragsList,
     getFavCrags,
     postFavCrag,
     deleteFavCrag
@@ -11,6 +12,9 @@ const requireAuth = require('../middleware/requireAuth');
 
 // Require auth for all routes
 router.use(requireAuth); 
+
+//GET favorite crags
+router.get('/favorite-crags-list', getFavCragsList);
 
 //GET favorite crags
 router.get('/favorite-crags', getFavCrags);
