@@ -3,6 +3,28 @@ const User = require('../models/userModel');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
+// Get user info
+const getUserInfo = async (req, res) => {
+    const { authorization } = req.headers;
+
+    const token = authorization.split(' ')[1];
+    const {_id} = jwt.verify(token, process.env.SECRET);
+
+    if(!mongoose.Types.ObjectId.isValid(_id)){
+        return res.status(404).json({error: 'User does not exist'})
+    };
+
+    req.user = await User.findOne({_id});
+
+    if(!req.user) {
+        return res.status(404).json({error:'User does not exist'})
+    };
+
+    const userInfo = req.user;
+
+    res.status(200).json(userInfo);
+}
+
 // Get user favorite crags list
 const getFavCragsList = async (req, res) => {
     const { authorization } = req.headers;
@@ -131,6 +153,7 @@ const deleteFavCrag = async (req, res) => {
 }
 
 module.exports = {
+    getUserInfo,
     getFavCragsList,
     getFavCrags,
     postFavCrag,

@@ -75,5 +75,26 @@ userSchema.statics.login = async function (email, password) {
     return user
 }
 
+// Static reset method
+userSchema.statics.reset = async function (email, password) {
+
+    // Validation
+    if(!password){
+        throw Error('Han de rellenarse todos los campos')
+    }
+    if(!validator.isStrongPassword(password)){
+        throw Error('La contraseña es demasiad débil')
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt);
+
+    const user = await this.updateOne({email:email}, {$set: {
+        password:hash
+    }});
+
+    return user;
+};
+
 module.exports = mongoose.model('User', userSchema);
 

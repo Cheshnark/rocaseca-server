@@ -1,5 +1,6 @@
 const express = require('express');
 const {
+    getUserInfo,
     getFavCragsList,
     getFavCrags,
     postFavCrag,
@@ -12,6 +13,9 @@ const requireAuth = require('../middleware/requireAuth');
 
 // Require auth for all routes
 router.use(requireAuth); 
+
+//GET user info
+router.get('/user-info', getUserInfo);
 
 //GET favorite crags
 router.get('/favorite-crags-list', getFavCragsList);

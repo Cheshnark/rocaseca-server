@@ -4,18 +4,24 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const cors = require('cors');
 
+// Mongoose configuration
+mongoose.set('strictQuery', true);
+
 // Import routes
 const mainRoutes = require('./routes/main');
 const userRoutes = require('./routes/user');
 const loggedRoutes = require('./routes/logged');
 
-
 // Express app
 const app = express();
+
+// Ejs configuration
+app.set("view engine", "ejs");
 
 // Middleware
 app.use(express.json());
 app.use(cors());
+app.use(express.static("public"));
 
 app.use((req,res, next) => {
     console.log(req.path, req.method);
