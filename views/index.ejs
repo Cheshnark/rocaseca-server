@@ -5,14 +5,80 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password page</title>
-    <link rel="stylesheet" href="css/styles.css" type="text/css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Dosis:wght@200;400;500;600;700;800&family=Kosugi+Maru&display=swap" rel="stylesheet">
     
 </head>
 <body>
-    <main className="reset-password">
-            <h2>Escribe una nueva contraseña</h2>
-            <p><%= user.username %></p>
-            <form action="" method="post" className="new-password">
+    <style>
+        html {
+          background-color: #f1debe;
+          min-height: 100%;
+          font-family: 'Dosis', sans-serif;
+        }
+
+        h1 {
+          color: #313d49;
+          padding: 10px;
+        }
+
+        .reset-password {
+            width: 85%;
+            margin: 0 auto;
+
+            text-align: center;
+        }
+
+        .reset-password-container {
+            background-color: #f2b341;
+            padding: 0.25rem 1rem 1.75rem 1rem;
+            border-radius: 3px;
+        }
+
+        .new-password {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            gap: 1rem;
+        }
+
+        .reset-password input {
+            display: block;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+
+            border-style: none;
+            border-radius: 3px;
+            font-size: 1.1rem;
+        }
+
+        .reset-password button {
+            background-color: #f1debe;
+            padding: 0.5rem 1rem 0.5rem 1rem;
+            margin: 0 auto 1rem auto;
+            width: 40%;
+        
+            border-style: none;
+            border-radius: 3px;
+        
+            box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.15);
+        
+            font-size: 1.2rem;
+        }
+
+        .reset-password button:hover {
+            cursor: pointer;
+            background-color: rgba(241, 222, 190, 0.80);
+            transform: scale(1.05);
+            transition: 0.15s;
+            font-weight: 500;
+        }
+    </style>
+
+    <main class="reset-password">
+        <div class="reset-password-container">
+            <h1>Escribe una nueva contraseña</h1>
+            <form action="" method="post" class="new-password">
             <input 
                 type='password'
                 name='password'
@@ -25,9 +91,9 @@
                 placeholder='Repite la contraseña ' 
                 value=''
                 />
-            <button type='submit'>Cambiar contraseña</button>
+            <button type='submit'>Enviar</button>
             </form>
-
+        </div>
     </main>
 </body>
 </html>

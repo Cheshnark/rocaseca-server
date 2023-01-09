@@ -56,7 +56,7 @@ const createUser = async (req, res) => {
         // Create a token
         const token = createToken(user._id);
 
-        res.status(200).json({username, token});
+        res.status(200).json({email, token});
     } catch (error) {
         res.status(400).json({error:error.message});
     }
@@ -185,7 +185,6 @@ const postResetPassword = async (req, res) => {
     }
 
     try {
-        
         const payload = jwt.verify(token, process.env.SECRET)
         
         const user = await User.reset(payload.email, password);

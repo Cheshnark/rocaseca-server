@@ -5,14 +5,50 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Success page</title>
-    <link rel="stylesheet" href="css/styles.css" type="text/css">
     
 </head>
 <body>
+    <style>
+        html {
+          background-color: #f1debe;
+          min-height: 100%;
+          font-family: 'Dosis', sans-serif;
+        }
+
+        h1 {
+          color: #313d49;
+          padding: 10px;
+          text-align: center;
+          margin-bottom: 0.5rem;
+        }
+
+        p {
+            font-family: 'Kosugi Maru', sans-serif;
+            text-align: justify;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .success {
+            width: 85%;
+            margin: 0 auto;
+        }
+
+        .success-container {
+            background-color: #f2b341;
+            padding: 0.5rem 1rem 2rem 1rem ;
+            border-radius: 3px;
+
+            margin-top: 3rem;
+        }
+    </style>
+
     <main className="success">
-            <h2>Has reseteado la contraseña con éxito</h2>
+        <div class="success-container">
+            <h1>Has reseteado la contraseña con éxito</h1>
             <p><%= email %>, has reseteado correctamente la contraseña. Vuelve a la página 
             inicial para entrar con tus nuevas credenciales.</p>
+        </div>
     </main>
 </body>
 </html>

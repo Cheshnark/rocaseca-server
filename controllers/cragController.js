@@ -29,11 +29,11 @@ const getCrag = async (req, res) => {
 
 // Create new crag
 const createCrag = async (req, res) => {
-    const {cragname, locality} = req.body;
+    const {cragname, locality, localityCode, VerticalId} = req.body;
     
     // Add doc to DB
     try {
-        const crag = await Crag.create({cragname, locality});
+        const crag = await Crag.create({cragname, locality, localityCode, VerticalId});
         res.status(200).json(crag);
     } catch (error) {
         res.status(400).json({error:error.message});
@@ -117,8 +117,10 @@ const getCurrentWeather = async (req, res) => {
             CloudCover: response.data[0].CloudCover,
             PrecipitationSummary: response.data[0].PrecipitationSummary.Precipitation}
         }})
-
-        res.json(updatedCrag);
+    })
+    .then( async () => {
+        const updatedCragNow = await Crag.findById(id);
+        res.json(updatedCragNow);
     })
     .catch((error) => {
         console.log(error);
@@ -128,6 +130,7 @@ const getCurrentWeather = async (req, res) => {
 //GET API info and PATCH crag with five days weather
 const getFiveDays = async (req, res) => {
     const {id} = req.params;
+    console.log(id);
 
     if(!mongoose.Types.ObjectId.isValid(id)){
         return res.status(404).json({error: 'Crag does not exist'})
@@ -233,7 +236,12 @@ const getFiveDays = async (req, res) => {
             },
         }})
 
-        res.json(updatedCrag);
+        // res.json(updatedCrag);
+    })
+    .then( async () => {
+        const updatedCragNow = await Crag.findById(id);
+        const updatedCragTime = updatedCragNow.fiveDaysUpdate
+        res.json(updatedCragTime);
     })
     .catch((error) => {
         console.log(error);
@@ -426,7 +434,12 @@ const getTwelveHours = async (req, res) => {
             ],
         }})
 
-        res.json(updatedCrag);
+        // res.json(updatedCrag);
+    })
+    .then( async () => {
+        const updatedCragNow = await Crag.findById(id);
+        const updatedCragTime = updatedCragNow.hourlyUpdate
+        res.json(updatedCragTime);
     })
     .catch((error) => {
         console.log(error);
